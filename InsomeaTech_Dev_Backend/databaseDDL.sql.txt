@@ -1,0 +1,380 @@
+-- insomea_tech.distis definition
+-- Drop table
+-- DROP TABLE insomea_tech.distis;
+
+create table insomea_tech.distis (
+	id uuid default gen_random_uuid() not null,
+	"name" varchar(255) not null,
+	email_support varchar(255) null,
+	phone varchar(50) null,
+	partner_link text null,
+	status varchar(20) default 'Active'::character varying null,
+	notes text null,
+	created_at timestamptz default CURRENT_TIMESTAMP null,
+	updated_at timestamptz default CURRENT_TIMESTAMP null,
+	constraint distis_pkey primary key (id),
+	constraint distis_status_check check (((status)::text = any (array[('Active'::character varying)::text,
+('Inactive'::character varying)::text])))
+);
+-- Table Triggers
+
+create trigger update_distis_updated_at before
+update
+    on
+    insomea_tech.distis for each row execute function update_updated_at_column();
+-- insomea_tech.products definition
+-- Drop table
+-- DROP TABLE insomea_tech.products;
+
+create table insomea_tech.products (
+	id uuid default gen_random_uuid() not null,
+	"name" varchar(255) not null,
+	sku varchar(100) not null,
+	description text null,
+	billing_cycle varchar(20) null,
+	term varchar(20) null,
+	category varchar(100) null,
+	list_price numeric(10, 2) null,
+	segment varchar(100) null,
+	status varchar(20) default 'Active'::character varying null,
+	created_at timestamptz default CURRENT_TIMESTAMP null,
+	updated_at timestamptz default CURRENT_TIMESTAMP null,
+	constraint products_pkey primary key (id),
+	constraint products_status_check check (((status)::text = any (array[('Active'::character varying)::text,
+('Discontinued'::character varying)::text])))
+);
+-- Table Triggers
+
+create trigger update_products_updated_at before
+update
+    on
+    insomea_tech.products for each row execute function update_updated_at_column();
+-- insomea_tech.system_settings definition
+-- Drop table
+-- DROP TABLE insomea_tech.system_settings;
+
+create table insomea_tech.system_settings (
+	"key" varchar(255) not null,
+	value text null,
+	description text null,
+	updated_at timestamptz default CURRENT_TIMESTAMP null,
+	constraint system_settings_pkey primary key (key)
+);
+-- insomea_tech.users definition
+-- Drop table
+-- DROP TABLE insomea_tech.users;
+
+create table insomea_tech.users (
+	id uuid default gen_random_uuid() not null,
+	email varchar(255) not null,
+	"name" varchar(255) not null,
+	"role" varchar(50) not null,
+	status varchar(20) default 'Active'::character varying null,
+	created_at timestamptz default CURRENT_TIMESTAMP null,
+	updated_at timestamptz default CURRENT_TIMESTAMP null,
+	constraint users_email_key unique (email),
+	constraint users_pkey primary key (id),
+	constraint users_role_check check (((role)::text = any (array[('Sales'::character varying)::text,
+('Technical'::character varying)::text,
+('Admin'::character varying)::text,
+('Finance'::character varying)::text]))),
+	constraint users_status_check check (((status)::text = any (array[('Active'::character varying)::text,
+('Inactive'::character varying)::text])))
+);
+-- Table Triggers
+
+create trigger update_users_updated_at before
+update
+    on
+    insomea_tech.users for each row execute function update_updated_at_column();
+-- insomea_tech.audit_logs definition
+-- Drop table
+-- DROP TABLE insomea_tech.audit_logs;
+
+create table insomea_tech.audit_logs (
+	id uuid default gen_random_uuid() not null,
+	entity_type varchar(50) not null,
+	entity_id uuid not null,
+	"action" varchar(20) not null,
+	"timestamp" timestamptz default CURRENT_TIMESTAMP null,
+	changes jsonb null,
+	ip_address inet null,
+	user_id uuid null,
+	constraint audit_logs_pkey primary key (id),
+	constraint audit_logs_user_id_fkey foreign key (user_id) references insomea_tech.users(id)
+);
+
+create index idx_audit_logs_entity_id on
+insomea_tech.audit_logs
+    using btree (entity_id);
+
+create index idx_audit_logs_entity_type on
+insomea_tech.audit_logs
+    using btree (entity_type);
+
+create index idx_audit_logs_timestamp on
+insomea_tech.audit_logs
+    using btree ("timestamp");
+-- insomea_tech.customers definition
+-- Drop table
+-- DROP TABLE insomea_tech.customers;
+
+create table insomea_tech.customers (
+	id uuid default gen_random_uuid() not null,
+	company_name varchar(255) not null,
+	tenant_id varchar(255) null,
+	onmicrosoft_domain varchar(255) null,
+	email varchar(255) null,
+	phone varchar(50) null,
+	contact_person varchar(255) null,
+	status varchar(20) default 'Active'::character varying null,
+	created_date timestamptz default CURRENT_TIMESTAMP null,
+	created_by varchar(255) not null,
+	"source" varchar(20) default 'Manual'::character varying null,
+	updated_at timestamptz default CURRENT_TIMESTAMP null,
+	sales_person_id uuid null,
+	country varchar(100) null,
+	constraint customers_pkey primary key (id),
+	constraint customers_source_check check (((source)::text = any (array[('Webhook'::character varying)::text,
+('Manual'::character varying)::text]))),
+	constraint customers_status_check check (((status)::text = any (array[('Active'::character varying)::text,
+('Inactive'::character varying)::text]))),
+	constraint customers_sales_person_id_fkey foreign key (sales_person_id) references insomea_tech.users(id)
+);
+
+create index idx_customers_company_name on
+insomea_tech.customers
+    using btree (company_name);
+
+create index idx_customers_status on
+insomea_tech.customers
+    using btree (status);
+
+create index idx_customers_tenant_id on
+insomea_tech.customers
+    using btree (tenant_id);
+-- Table Triggers
+
+create trigger update_customers_updated_at before
+update
+    on
+    insomea_tech.customers for each row execute function update_updated_at_column();
+-- insomea_tech.orders definition
+-- Drop table
+-- DROP TABLE insomea_tech.orders;
+
+create table insomea_tech.orders (
+	id uuid default gen_random_uuid() not null,
+	order_number varchar(50) not null,
+	order_date date not null,
+	status_order varchar(50) default 'WaitingForFinanceApproval'::character varying null,
+	lpo_url text null,
+	so_url text null,
+	proof_tech_url text null,
+	notes text null,
+	created_date timestamptz default CURRENT_TIMESTAMP null,
+	created_by varchar(255) not null,
+	last_modified_date timestamptz default CURRENT_TIMESTAMP null,
+	last_modified_by varchar(255) null,
+	sales_person_id uuid not null,
+	technical_user_id uuid null,
+	customer_id uuid not null,
+	po_number varchar(100) null,
+	disti_po_url text null,
+	constraint orders_order_number_key unique (order_number),
+	constraint orders_pkey primary key (id),
+	constraint orders_status_order_check check (((status_order)::text = any (array[('Pending'::character varying)::text,
+('WaitingForFinanceApproval'::character varying)::text,
+('ToBeProvisioned'::character varying)::text,
+('UnderProcessing'::character varying)::text,
+('DistiProcessing'::character varying)::text,
+('Done'::character varying)::text,
+('Cancelled'::character varying)::text]))),
+	constraint orders_customer_id_fkey foreign key (customer_id) references insomea_tech.customers(id),
+	constraint orders_sales_person_id_fkey foreign key (sales_person_id) references insomea_tech.users(id),
+	constraint orders_technical_user_id_fkey foreign key (technical_user_id) references insomea_tech.users(id)
+);
+
+create index idx_orders_customer_id on
+insomea_tech.orders
+    using btree (customer_id);
+
+create index idx_orders_order_date on
+insomea_tech.orders
+    using btree (order_date);
+
+create index idx_orders_order_number on
+insomea_tech.orders
+    using btree (order_number);
+
+create index idx_orders_status_order on
+insomea_tech.orders
+    using btree (status_order);
+-- Table Triggers
+
+create trigger update_orders_last_modified_date before
+update
+    on
+    insomea_tech.orders for each row execute function update_last_modified_date_column();
+-- insomea_tech.zoho_invoices definition
+-- Drop table
+-- DROP TABLE insomea_tech.zoho_invoices;
+
+create table insomea_tech.zoho_invoices (
+	id uuid default gen_random_uuid() not null,
+	zoho_invoice_id varchar(255) null,
+	zoho_invoice_number varchar(255) null,
+	json_zoho jsonb null,
+	xml_no_sign text null,
+	xml_with_sign text null,
+	ttn_ref varchar(255) null,
+	ttn_code text null,
+	status varchar(50) null,
+	user_id uuid null,
+	errors jsonb null,
+	created_at timestamptz default CURRENT_TIMESTAMP null,
+	updated_at timestamptz default CURRENT_TIMESTAMP null,
+	constraint zoho_invoices_pkey primary key (id),
+	constraint zoho_invoices_user_id_fkey foreign key (user_id) references insomea_tech.users(id)
+);
+
+create index idx_zoho_invoices_status on
+insomea_tech.zoho_invoices
+    using btree (status);
+
+create index idx_zoho_invoices_user_id on
+insomea_tech.zoho_invoices
+    using btree (user_id);
+-- Table Triggers
+
+create trigger update_zoho_invoices_updated_at before
+update
+    on
+    insomea_tech.zoho_invoices for each row execute function update_updated_at_column();
+-- insomea_tech.order_lines definition
+-- Drop table
+-- DROP TABLE insomea_tech.order_lines;
+
+create table insomea_tech.order_lines (
+	id uuid default gen_random_uuid() not null,
+	quantity int4 not null,
+	status varchar(50) default 'Pending'::character varying null,
+	expiration_date timestamptz null,
+	activated_date timestamptz null,
+	notes text null,
+	order_id uuid not null,
+	product_id uuid not null,
+	disti_id uuid null,
+	activated_by uuid null,
+	constraint order_lines_pkey primary key (id),
+	constraint order_lines_quantity_check check ((quantity > 0)),
+	constraint order_lines_status_check check (((status)::text = any (array[('Pending'::character varying)::text,
+('UnderProcessing'::character varying)::text,
+('Activated'::character varying)::text,
+('Cancelled'::character varying)::text]))),
+	constraint order_lines_activated_by_fkey foreign key (activated_by) references insomea_tech.users(id),
+	constraint order_lines_disti_id_fkey foreign key (disti_id) references insomea_tech.distis(id),
+	constraint order_lines_order_id_fkey foreign key (order_id) references insomea_tech.orders(id) on
+delete
+    cascade,
+    constraint order_lines_product_id_fkey foreign key (product_id) references insomea_tech.products(id)
+);
+
+create index idx_order_lines_order_id on
+insomea_tech.order_lines
+    using btree (order_id);
+
+create index idx_order_lines_product_id on
+insomea_tech.order_lines
+    using btree (product_id);
+
+create index idx_order_lines_status on
+insomea_tech.order_lines
+    using btree (status);
+-- insomea_tech.customer_products definition
+-- Drop table
+-- DROP TABLE insomea_tech.customer_products;
+
+create table insomea_tech.customer_products (
+	id uuid default gen_random_uuid() not null,
+	quantity int4 not null,
+	start_date timestamptz not null,
+	expiration_date timestamptz not null,
+	billing_cycle varchar(20) null,
+	term varchar(20) null,
+	status varchar(20) default 'Active'::character varying null,
+	notes text null,
+	created_date timestamptz default CURRENT_TIMESTAMP null,
+	last_modified_date timestamptz default CURRENT_TIMESTAMP null,
+	customer_id uuid not null,
+	product_id uuid not null,
+	order_line_id uuid null,
+	constraint check_start_before_expiration check ((start_date <= expiration_date)),
+	constraint customer_products_pkey primary key (id),
+	constraint customer_products_quantity_check check ((quantity > 0)),
+	constraint customer_products_status_check check (((status)::text = any (array[('Active'::character varying)::text,
+('Expired'::character varying)::text,
+('Suspended'::character varying)::text,
+('Cancelled'::character varying)::text]))),
+	constraint customer_products_customer_id_fkey foreign key (customer_id) references insomea_tech.customers(id),
+	constraint customer_products_order_line_id_fkey foreign key (order_line_id) references insomea_tech.order_lines(id),
+	constraint customer_products_product_id_fkey foreign key (product_id) references insomea_tech.products(id)
+);
+
+create index idx_customer_products_customer_id on
+insomea_tech.customer_products
+    using btree (customer_id);
+
+create index idx_customer_products_expiration_date on
+insomea_tech.customer_products
+    using btree (expiration_date);
+
+create index idx_customer_products_product_id on
+insomea_tech.customer_products
+    using btree (product_id);
+
+create index idx_customer_products_status on
+insomea_tech.customer_products
+    using btree (status);
+-- Table Triggers
+
+create trigger update_customer_products_last_modified_date before
+update
+    on
+    insomea_tech.customer_products for each row execute function update_last_modified_date_column();
+-- insomea_tech.order_history definition
+-- Drop table
+-- DROP TABLE insomea_tech.order_history;
+
+create table insomea_tech.order_history (
+	id uuid default gen_random_uuid() not null,
+	changed_date timestamptz default CURRENT_TIMESTAMP null,
+	old_status varchar(50) null,
+	new_status varchar(50) null,
+	change_type varchar(50) not null,
+	field_changed varchar(100) null,
+	old_value text null,
+	new_value text null,
+	notes text null,
+	order_id uuid not null,
+	order_line_id uuid null,
+	changed_by uuid not null,
+	constraint order_history_change_type_check check (((change_type)::text = any (array[('StatusChange'::character varying)::text,
+('Created'::character varying)::text,
+('Modified'::character varying)::text,
+('Deleted'::character varying)::text]))),
+	constraint order_history_pkey primary key (id),
+	constraint order_history_changed_by_fkey foreign key (changed_by) references insomea_tech.users(id),
+	constraint order_history_order_id_fkey foreign key (order_id) references insomea_tech.orders(id) on
+delete
+    cascade,
+    constraint order_history_order_line_id_fkey foreign key (order_line_id) references insomea_tech.order_lines(id)
+);
+
+create index idx_order_history_changed_date on
+insomea_tech.order_history
+    using btree (changed_date);
+
+create index idx_order_history_order_id on
+insomea_tech.order_history
+    using btree (order_id);

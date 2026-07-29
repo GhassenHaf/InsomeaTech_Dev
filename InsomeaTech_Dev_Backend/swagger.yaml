@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: Insomea Tech Backend API
+  description: Technical CRM System API
+  version: 1.0.0
+  contact:
+    name: Insomea Tech
+    email: support@insomea.com
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://api.insomea.com
+    description: Production server
+
+paths:
+  /api/auth/login:
+    post:
+      summary: User login
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Unauthorized
+
+  /api/auth/logout:
+    post:
+      summary: User logout
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Logout successful
+
+  /api/users:
+    get:
+      summary: Get all users
+      tags:
+        - Users
+      responses:
+        '200':
+          description: List of users
+    post:
+      summary: Create a new user
+      tags:
+        - Users
+      responses:
+        '201':
+          description: User created
+
+  /api/customers:
+    get:
+      summary: Get all customers
+      tags:
+        - Customers
+      responses:
+        '200':
+          description: List of customers
+    post:
+      summary: Create a new customer
+      tags:
+        - Customers
+      responses:
+        '201':
+          description: Customer created
+
+  /api/products:
+    get:
+      summary: Get all products
+      tags:
+        - Products
+      responses:
+        '200':
+          description: List of products
+    post:
+      summary: Create a new product
+      tags:
+        - Products
+      responses:
+        '201':
+          description: Product created
+
+  /api/orders:
+    get:
+      summary: Get all orders
+      tags:
+        - Orders
+      responses:
+        '200':
+          description: List of orders
+    post:
+      summary: Create a new order
+      tags:
+        - Orders
+      responses:
+        '201':
+          description: Order created
+
+tags:
+  - name: Authentication
+    description: Authentication endpoints
+  - name: Users
+    description: User management endpoints
+  - name: Customers
+    description: Customer management endpoints
+  - name: Products
+    description: Product management endpoints
+  - name: Orders
+    description: Order management endpoints
