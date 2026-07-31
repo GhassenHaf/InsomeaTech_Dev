@@ -8,15 +8,16 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
-# What command goes here to build the Angular app?
 RUN npm run build
-
 
 # --- Stage 2: Serve with Nginx ---
 FROM nginx:alpine
 
 # Copy built app static files to Nginx
 COPY --from=build /app/dist/sakai-ng/browser /usr/share/nginx/html
+
+# Copy custom Nginx config to support Angular SPA routing
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

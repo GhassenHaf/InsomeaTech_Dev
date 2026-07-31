@@ -1,6 +1,10 @@
 node_modules/
 dist/
-.angular/
-postgres_data/
+build/
 .env
+*.local
 *.log
+npm-debug.log*
+postgres_data/
+.DS_Store
+Thumbs.db

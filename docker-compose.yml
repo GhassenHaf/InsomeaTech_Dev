@@ -42,6 +42,8 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    env_file:
+      - ./InsomeaTech_Dev_Backend/.env
     environment:
       DB_HOST: postgres
       DB_USER: dev_user
@@ -53,7 +55,6 @@ services:
         condition: service_healthy
     networks:
       - insomea-network
-
   # 3. Angular Frontend
   frontend:
     build:
