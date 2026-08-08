@@ -13,10 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./InsomeaTech_Dev_Backend/init-db/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-      - ./InsomeaTech_Dev_Backend/init-db/02-trigger-functions.sql:/docker-entrypoint-initdb.d/02-trigger-functions.sql
-      - ./InsomeaTech_Dev_Backend/init-db/03-tables-and-indexes.sql:/docker-entrypoint-initdb.d/03-tables-and-indexes.sql
-      - ./InsomeaTech_Dev_Backend/init-db/04-seed-data.sql:/docker-entrypoint-initdb.d/04-seed-data.sql
+      - ./InsomeaTech_Dev_Backend/init-db:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U dev_user -d insomea_db"]
