@@ -15,6 +15,7 @@ pipeline {
             if [ ! -f InsomeaTech_Dev_Backend/.env ]; then
                 echo "PORT=5000" > InsomeaTech_Dev_Backend/.env
             fi
+            docker compose down --remove-orphans
             docker compose up -d --remove-orphans
         '''
     }
