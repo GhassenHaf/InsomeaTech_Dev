@@ -9,13 +9,16 @@ const PORT = process.env.PORT || 3000;
 async function startServer() {
     try {
         await db.connect();
-        
+
+        // Ensure schema exists BEFORE running model initializations
+        await db.query('CREATE SCHEMA IF NOT EXISTS insomea_tech;');
+
         // Initialize settings table
         await SystemSetting.initTable();
 
         // Initialize cron jobs
         expirationCron.init();
-        
+
         // Start server
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
