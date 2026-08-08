@@ -9,10 +9,15 @@ pipeline {
             }
         }
         stage('2. Launch Containers') {
-            steps {
-                echo 'Starting full-stack application stack...'
-                sh 'docker compose up -d --remove-orphans'
-            }
-        }
+    steps {
+        echo 'Starting full-stack application stack...'
+        sh '''
+            if [ ! -f InsomeaTech_Dev_Backend/.env ]; then
+                echo "PORT=5000" > InsomeaTech_Dev_Backend/.env
+            fi
+            docker compose up -d --remove-orphans
+        '''
+    }
+}
     }
 }
