@@ -6,7 +6,7 @@ pipeline {
             steps {
                 echo 'Building Angular & Express Docker images...'
 		sh 'git clean -ffdx'
-                sh 'docker compose build 
+                sh 'docker compose build' 
             }
         }
         stage('2. Launch Containers') {
