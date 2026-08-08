@@ -1,6 +1,11 @@
 pipeline {
     agent any
-
+    stage('Tear Down Existing Containers') {
+            steps {
+                // The -v flag destroys the stale, empty Docker volume
+                sh 'docker-compose down -v'
+            }
+        }
     stages {
         stage('1. Build Images') {
             steps {
