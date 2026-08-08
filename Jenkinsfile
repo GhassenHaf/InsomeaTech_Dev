@@ -24,7 +24,7 @@ pipeline {
 	    echo "AZURE_CLIENT_ID=e75c2cda-f403-4df1-8b0a-eaaac0bf91de" >> InsomeaTech_Dev_Backend/.env
 	    echo "AZURE_CLIENT_SECRET=WpU8Q~z7pzq3KPEiQMoMCNTuaHnkcbbU9AMetaNG" >> InsomeaTech_Dev_Backend/.env
 	    echo "AZURE_TENANT_ID=b5ddb5f6-c713-48e9-a93d-d9fa7d6d6ae8" >> InsomeaTech_Dev_Backend/.env
-	    echo "AZURE_CALLBACK_URL=http://localhost:3000/api/auth/callback" >> InsomeaTech_Dev_Backend/.env
+	    echo "AZURE_CALLBACK_URL=https://localhost:3000/api/auth/callback" >> InsomeaTech_Dev_Backend/.env
 
 
             docker compose down -v --remove-orphans
