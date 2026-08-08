@@ -5,7 +5,7 @@ pipeline {
 	stage('Tear Down Existing Containers') {
             steps {
                 // The -v flag destroys the stale, empty Docker volume
-                sh 'docker-compose down -v'
+                sh 'docker compose down -v'
             }
         }
 
