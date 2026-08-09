@@ -12,7 +12,7 @@ pipeline {
         stage('1. Build Images') {
             steps {
                 echo 'Building Angular & Express Docker images...'
-		sh 'git clean -ffdx'
+		sh 'git clean -ffdx -e "*.env" -e ".env*"'
                 sh 'docker compose build' 
             }
         }
