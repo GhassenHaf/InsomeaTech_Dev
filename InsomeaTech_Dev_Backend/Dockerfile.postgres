@@ -1,0 +1,9 @@
+# Use the exact same base image
+FROM postgres:16-alpine
+
+# Copy the initialization scripts directly into the image's init directory
+# (Since this Dockerfile will be built from the InsomeaTech_Dev_Backend context)
+COPY ./init-db/ /docker-entrypoint-initdb.d/
+
+# Ensure the scripts have the correct permissions to execute
+RUN chmod -R 755 /docker-entrypoint-initdb.d/

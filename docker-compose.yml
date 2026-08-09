@@ -2,7 +2,9 @@ name: insomea-dev
 services:
   # 1. PostgreSQL Database
   postgres:
-    image: postgres:16-alpine
+    build:
+      context: ./InsomeaTech_Dev_Backend
+      dockerfile: Dockerfile.postgres
     container_name: insomea-postgres-dev
     restart: unless-stopped
     environment:
@@ -15,7 +17,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./InsomeaTech_Dev_Backend/init-db:/docker-entrypoint-initdb.d
+      # THE INIT-DB BIND MOUNT HAS BEEN REMOVED HERE
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U dev_user -d insomea_db"]
       interval: 10s
