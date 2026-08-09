@@ -5,7 +5,7 @@ pipeline {
 	stage('Tear Down Existing Containers') {
             steps {
                 // The -v flag destroys the stale, empty Docker volume
-                sh 'docker compose down -v'
+                sh 'docker compose down'
             }
         }
 
@@ -37,7 +37,7 @@ pipeline {
             echo "JWT_EXPIRES_IN=1h" >> InsomeaTech_Dev_Backend/.env
             echo "FRONTEND_URL=http://localhost" >> InsomeaTech_Dev_Backend/.env
 
-            docker compose down -v --remove-orphans
+            docker compose down --remove-orphans
             docker compose up -d --remove-orphans
         '''
     }
