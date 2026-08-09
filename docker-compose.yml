@@ -1,3 +1,4 @@
+name: insomea-dev
 services:
   # 1. PostgreSQL Database
   postgres:
