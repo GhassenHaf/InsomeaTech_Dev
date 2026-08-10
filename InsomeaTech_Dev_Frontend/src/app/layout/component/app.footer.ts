@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
     standalone: true,
     selector: 'app-footer',
     template: `<div class="layout-footer">
-        Insomea Tech by
+        Insomea Tech by Ghassen
         <a href="https://www.insomea.com" target="_blank" rel="noopener noreferrer" class="text-primary font-bold hover:underline">Insomea</a>
     </div>`
 })
