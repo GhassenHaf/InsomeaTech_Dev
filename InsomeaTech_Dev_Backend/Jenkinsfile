@@ -35,11 +35,13 @@ pipeline {
             steps {
                 dir('InsomeaTech_Dev_Backend') {
                     sh '''
-                        echo "CVE-2026-14257" > .trivyignore
-                        echo "CVE-2026-69152" >> .trivyignore
-                        echo "CVE-2026-69192" >> .trivyignore
-                        echo "CVE-2026-73566" >> .trivyignore
-                        
+                        cat << 'EOF' > .trivyignore
+                        CVE-2026-14257
+                        CVE-2026-69152
+                        CVE-2026-69192
+                        CVE-2026-73566
+                        EOF
+
                         docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/workspace aquasec/trivy:latest image --severity HIGH,CRITICAL --ignore-unfixed --ignorefile /workspace/.trivyignore --exit-code 1 ${IMAGE_TAG}
                     '''
                 }
