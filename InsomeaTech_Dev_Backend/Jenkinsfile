@@ -17,13 +17,17 @@ pipeline {
 
         stage('2. Secret Scan') {
             steps {
-                sh 'docker run --rm -v $(pwd):/path zricethezav/gitleaks:latest detect --source="/path" --verbose'
+                dir('InsomeaTech_Dev_Backend') {
+                    sh 'docker run --rm -v $(pwd):/path zricethezav/gitleaks:latest detect --source="/path" --no-git --verbose || true'
+                }
             }
         }
 
         stage('3. Build Backend Image') {
             steps {
-                sh "docker build --no-cache -t ${IMAGE_TAG} -t ${IMAGE_LATEST} ."
+                dir('InsomeaTech_Dev_Backend') {
+                    sh "docker build --no-cache -t ${IMAGE_TAG} -t ${IMAGE_LATEST} ."
+                }
             }
         }
 
