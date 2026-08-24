@@ -1,9 +1,9 @@
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000/api',
-  frontendUrl: 'http://localhost',
-  zohoSigningAgentUrl: 'http://localhost:7797/api/sign',
-  zohoTtnSaveUrl: 'http://localhost:7797/api/ttn/save',
-  zohoTtnConsultUrl: 'http://localhost:7797/api/ttn/consult',
+  production: true,
+  apiUrl: 'https://app-insomea-backend-dev-gtg5anasfgegeabw.swedencentral-01.azurewebsites.net/api',
+  frontendUrl: 'https://app-insomea-frontend-dev-d3g2f5ayf6bcc5g4.swedencentral-01.azurewebsites.net',
+  zohoSigningAgentUrl: '',
+  zohoTtnSaveUrl: '',
+  zohoTtnConsultUrl: '',
   primaryColor: '#4ac2ad'
 };
