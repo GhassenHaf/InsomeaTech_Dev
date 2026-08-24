@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+
+    environment {
+        ACR_REGISTRY = 'acrghassendev.azurecr.io'
+        IMAGE_NAME   = 'backend'
+        IMAGE_TAG    = "${ACR_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
+        IMAGE_LATEST = "${ACR_REGISTRY}/${IMAGE_NAME}:latest"
+    }
+
+    stages {
+        stage('1. Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('2. Secret Scan') {
+            steps {
+                sh 'docker run --rm -v $(pwd):/path zricethezav/gitleaks:latest detect --source="/path" --verbose'
+            }
+        }
+
+        stage('3. Build Backend Image') {
+            steps {
+                sh "docker build --no-cache -t ${IMAGE_TAG} -t ${IMAGE_LATEST} ."
+            }
+        }
+
+        stage('4. Trivy Vulnerability Gate') {
+            steps {
+                sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL --exit-code 1 ${IMAGE_TAG}"
+            }
+        }
+
+        stage('5. Push to ACR') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'acrghassendev', usernameVariable: 'ACR_USER', passwordVariable: 'ACR_PASS')]) {
+                    sh '''
+                        echo "$ACR_PASS" | docker login $ACR_REGISTRY -u "$ACR_USER" --password-stdin
+                        docker push $IMAGE_TAG
+                        docker push $IMAGE_LATEST
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh "docker logout $ACR_REGISTRY || true"
+            cleanWs()
+        }
+    }
+}
