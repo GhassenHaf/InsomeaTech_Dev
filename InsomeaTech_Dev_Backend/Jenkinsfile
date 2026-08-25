@@ -58,8 +58,8 @@ pipeline {
                     '''
                 }
             }
-        }
-    }
+	}
+
 	stage('6. Trigger Azure App Service Update') {
             steps {
                 withCredentials([
