@@ -67,7 +67,7 @@ pipeline {
                 ]) {
                     sh '''
                         docker run --rm mcr.microsoft.com/azure-cli:latest sh -c "
-                            az login --service-principal -u \\"$AZ_CLIENT_ID\\" -p \\"$AZ_CLIENT_SECRET\\" --tenant \\"efca227f-fc70-4c52-bade-e36ada2a3a40\\" && \\
+                            az login --service-principal -u \\"$AZ_CLIENT_ID\\" -p \\"$AZ_CLIENT_SECRET\\" --tenant \\"efca227f-fc70-4c52-bade-e36ada2a3a40\\" --subscription \\"6850d94e-3234-463d-aa51-615d3c486939\\" && \\
                             az webapp restart --name \\"app-insomea-backend-dev\\" --resource-group \\"rg-GhassenHafsawi\\"
                         "
                     '''
