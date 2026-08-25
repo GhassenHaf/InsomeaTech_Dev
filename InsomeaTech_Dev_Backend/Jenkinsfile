@@ -58,8 +58,9 @@ pipeline {
                     '''
                 }
             }
+        } // <--- THIS CLOSING BRACE WAS MISSING
 
-	stage('6. Trigger Azure App Service Update') {
+        stage('6. Trigger Azure App Service Update') {
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'azure-service-principal', usernameVariable: 'AZ_CLIENT_ID', passwordVariable: 'AZ_CLIENT_SECRET')
@@ -73,6 +74,8 @@ pipeline {
                 }
             }
         }
+    }
+
     post {
         always {
             sh "docker logout $ACR_REGISTRY || true"
