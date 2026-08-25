@@ -68,7 +68,8 @@ pipeline {
                     sh '''
                         docker run --rm mcr.microsoft.com/azure-cli:latest sh -c "
                             az login --service-principal -u \\"$AZ_CLIENT_ID\\" -p \\"$AZ_CLIENT_SECRET\\" --tenant \\"efca227f-fc70-4c52-bade-e36ada2a3a40\\" --allow-no-subscriptions && \\
-                            az rest --method post --url \\"https://management.azure.com/subscriptions/6850d94e-3234-463d-aa51-615d3c486939/resourceGroups/rg-GhassenHafsawi/providers/Microsoft.Web/sites/app-insomea-backend-dev/restart?api-version=2022-03-01\\"
+                            TOKEN=\\$(az account get-access-token --query accessToken -o tsv) && \\
+                            curl -X POST -H \\"Authorization: Bearer \\$TOKEN\\" \\"https://management.azure.com/subscriptions/6850d94e-3234-463d-aa51-615d3c486939/resourceGroups/rg-GhassenHafsawi/providers/Microsoft.Web/sites/app-insomea-backend-dev/restart?api-version=2022-03-01\\"
                         "
                     '''
                 }
