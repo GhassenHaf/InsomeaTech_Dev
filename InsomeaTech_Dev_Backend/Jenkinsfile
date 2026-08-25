@@ -62,7 +62,16 @@ pipeline {
     }
 	stage('6. Trigger Azure App Service Update') {
             steps {
-                sh 'az webapp restart --name app-insomea-backend-dev --resource-group rg-GhassenHafsawi'
+                withCredentials([
+                    usernamePassword(credentialsId: 'azure-service-principal', usernameVariable: 'AZ_CLIENT_ID', passwordVariable: 'AZ_CLIENT_SECRET')
+                ]) {
+                    sh '''
+                        docker run --rm mcr.microsoft.com/azure-cli:latest sh -c "
+                            az login --service-principal -u \\"$AZ_CLIENT_ID\\" -p \\"$AZ_CLIENT_SECRET\\" --tenant \\"efca227f-fc70-4c52-bade-e36ada2a3a40\\" && \\
+                            az webapp restart --name \\"app-insomea-backend-dev\\" --resource-group \\"rg-GhassenHafsawi\\"
+                        "
+                    '''
+                }
             }
         }
     post {
