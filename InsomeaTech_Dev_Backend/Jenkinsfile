@@ -73,7 +73,6 @@ pipeline {
                 }
             }
         }
-    }
     post {
         always {
             sh "docker logout $ACR_REGISTRY || true"
