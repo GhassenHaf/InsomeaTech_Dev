@@ -58,7 +58,6 @@ pipeline {
                     '''
                 }
             }
-	}
 
 	stage('6. Trigger Azure App Service Update') {
             steps {
@@ -74,11 +73,11 @@ pipeline {
                 }
             }
         }
+    }
     post {
         always {
             sh "docker logout $ACR_REGISTRY || true"
             cleanWs()
         }
     }
-}
 }
