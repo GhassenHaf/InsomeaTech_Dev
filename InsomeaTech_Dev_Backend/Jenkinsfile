@@ -26,7 +26,7 @@ pipeline {
         stage('3. Build Backend Image') {
             steps {
                 dir('InsomeaTech_Dev_Backend') {
-                    sh "docker build --no-cache -t ${IMAGE_TAG} -t ${IMAGE_LATEST} ."
+                    sh "docker buildx build --platform linux/amd64 --provenance=false --load --no-cache -t ${IMAGE_TAG} -t ${IMAGE_LATEST} ."
                 }
             }
         }
