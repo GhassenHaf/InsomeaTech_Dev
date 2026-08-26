@@ -51,8 +51,5 @@
     "nodejs"
   ],
   "author": "Insomea Tech",
-  "license": "MIT",
-  "overrides": {
-    "uuid": "^8.3.2"
-  }
+  "license": "MIT"
 }
