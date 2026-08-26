@@ -58,11 +58,7 @@ pipeline {
             }
         }
     }
-	stage('6. Trigger Azure App Service Update') {
-            steps {
-                sh 'az webapp restart --name app-insomea-frontend-dev --resource-group rg-GhassenHafsawi'
-            }
-        }
+
     post {
         always {
             sh "docker logout $ACR_REGISTRY || true"
